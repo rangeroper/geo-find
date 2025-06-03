@@ -6,21 +6,30 @@ on:
       - main
   workflow_dispatch:
 
+# Required permissions for gh-pages deployment
+permissions:
+  contents: write
+  pages: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
+        with:
+          # Fetch full history for gh-pages to work properly
+          fetch-depth: 0
 
-      - name: Setup Node
+      - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: 'npm'
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Build project
         run: npm run build
@@ -31,6 +40,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
 
       - name: Deploy to GitHub Pages
-        run: npx gh-pages -d dist
+        run: npm run deploy
         env:
+          # This ensures gh-pages can push to the repository
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
