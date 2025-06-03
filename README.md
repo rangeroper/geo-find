@@ -1,6 +1,6 @@
 # Geo Find
 
-A React-based web app to find nearby places with an interactive map and light/dark theme support.
+A Geospacial React-based web app to find nearby places with an interactive map and light/dark theme support.
 
 ## 🌐 Demo
 
