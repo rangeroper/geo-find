@@ -1,12 +1,37 @@
-# React + Vite
+# Geo Find
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A React-based web app to find nearby places with an interactive map and light/dark theme support.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Technologies Used
 
-## Expanding the ESLint configuration
+- **React** — Frontend UI library  
+- **React Leaflet** — Interactive maps with Leaflet.js in React  
+- **Leaflet** — Open-source JavaScript library for mobile-friendly maps  
+- **Tailwind CSS** — Utility-first CSS framework for styling  
+- **Lucide-react** — Icon components for React (used for sun/moon theme toggle)  
+- **Custom Theme Context** — React Context API for light/dark theme toggle  
+- **OpenStreetMap** — Open map tiles used for light mode  
+- **Stadia Maps (Alidade Smooth Dark)** — Dark-themed map tiles for dark mode  
+- **Git** — Version control  
+- **Vite** or **Create React App** (depending on your setup) — Build tool  
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+---
+
+## Features
+
+- Search for nearby places with customizable categories  
+- Interactive map with markers and popups  
+- Light/dark mode toggle with smooth UI transitions  
+- Uses OpenStreetMap tiles for light mode and Stadia Maps’ Alidade Smooth Dark tiles for dark mode  
+- Responsive and modern UI built with Tailwind CSS  
+- Persistent theme preference stored in localStorage  
+
+---
+
+## Setup & Running Locally
+
+1. Clone the repository:  
+   ```bash
+   git clone https://github.com/rangeroper/geo-find.git
