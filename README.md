@@ -2,14 +2,10 @@
 
 A React-based web app to find nearby places with an interactive map and light/dark theme support.
 
----
-
 ## 🌐 Demo
 
 **Live URL:**  
 [https://rangeroper.github.io/geo-find/](https://rangeroper.github.io/geo-find/)
-
----
 
 ## Technologies Used
 
@@ -24,8 +20,6 @@ A React-based web app to find nearby places with an interactive map and light/da
 - **Git** — Version control  
 - **Vite** or **Create React App** (depending on your setup) — Build tool  
 
----
-
 ## Features
 
 - Search for nearby places with customizable categories  
@@ -34,8 +28,6 @@ A React-based web app to find nearby places with an interactive map and light/da
 - Uses OpenStreetMap tiles for light mode and Stadia Maps’ Alidade Smooth Dark tiles for dark mode  
 - Responsive and modern UI built with Tailwind CSS  
 - Persistent theme preference stored in localStorage  
-
----
 
 ## Setup & Running Locally
 
