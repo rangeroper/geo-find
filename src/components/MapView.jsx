@@ -1,7 +1,7 @@
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import { latLngBounds } from 'leaflet';
 import { useEffect } from 'react';
-import { useTheme } from "../context/ThemeContext"; // adjust path if needed
+import { useTheme } from "../context/ThemeContext";
 
 // Helper to map distance in miles to zoom level (fallback if no places)
 function getZoomLevel(distanceMiles) {
@@ -49,10 +49,9 @@ export default function MapView({
         ? category.charAt(0).toUpperCase() + category.slice(1)
         : 'Places';
 
-    // Optional: dark-friendly tile layer (CartoDB)
     const tileLayerUrl = darkMode
-    ? 'https://tiles.stadiamaps.com/tiles/alidade_smooth_dark/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+    ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
     return (
     <div>
@@ -60,7 +59,7 @@ export default function MapView({
         className="mb-6 font-extrabold tracking-tight"
         style={{
             color: darkMode ? '#e0e0e0' : '#000000',
-            fontSize: '1.75rem',      // ~44px, bigger than 2xl
+            fontSize: '1.75rem',
             lineHeight: 1.1,
         }}
         >
@@ -95,7 +94,7 @@ export default function MapView({
           <ChangeMapView center={location} places={places} distance={distance} />
 
           <TileLayer
-            key={darkMode ? 'dark' : 'light'} // ✅ Force reload when theme changes
+            key={darkMode ? 'dark' : 'light'} 
             attribution="&copy; OpenStreetMap contributors"
             url={tileLayerUrl}
           />
@@ -107,7 +106,6 @@ export default function MapView({
           ))}
         </MapContainer>
 
-        {/* Floating Buttons */}
         <div className="absolute top-4 right-4 z-20 flex flex-col space-y-2">
           <button
             onClick={() => onSetView('list')}

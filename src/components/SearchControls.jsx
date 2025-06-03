@@ -1,6 +1,6 @@
 import AddressAutocomplete from './AddressAutocomplete';
 import { Navigation } from "lucide-react";
-import { useTheme } from "../context/ThemeContext"; // adjust path if needed
+import { useTheme } from "../context/ThemeContext";
 
 export default function SearchControls({
   address,
