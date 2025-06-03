@@ -4,6 +4,13 @@ A React-based web app to find nearby places with an interactive map and light/da
 
 ---
 
+## 🌐 Demo
+
+**Live URL:**  
+[https://rangeroper.github.io/geo-find/](https://rangeroper.github.io/geo-find/)
+
+---
+
 ## Technologies Used
 
 - **React** — Frontend UI library  
@@ -35,3 +42,12 @@ A React-based web app to find nearby places with an interactive map and light/da
 1. Clone the repository:  
    ```bash
    git clone https://github.com/rangeroper/geo-find.git
+2. Change Directories
+   ```bash
+   cd geo-find
+3. Install dependencies/packages
+   ```bash
+   npm install
+4. Start dev environment
+   ```bash
+   npm run dev
