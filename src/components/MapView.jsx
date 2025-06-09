@@ -1,6 +1,13 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
+import {
+  MapContainer,
+  TileLayer,
+  Marker,
+  Popup,
+  useMap,
+  Tooltip,
+} from 'react-leaflet';
 import { latLngBounds } from 'leaflet';
 import { useTheme } from '../context/ThemeContext';
 import L from 'leaflet';
@@ -42,7 +49,18 @@ function ChangeMapView({ center, places, distance }) {
   return null;
 }
 
-// Create icon components with dynamic colors based on darkMode
+function ZoomTracker({ onZoomChange }) {
+  const map = useMap();
+
+  useEffect(() => {
+    const handleZoom = () => onZoomChange(map.getZoom());
+    map.on('zoomend', handleZoom);
+    return () => map.off('zoomend', handleZoom);
+  }, [map, onZoomChange]);
+
+  return null;
+}
+
 function getCategoryIconComponents(iconColor) {
   return {
     park: <ParkIcon style={{ color: iconColor, fontSize: 32 }} />,
@@ -57,17 +75,8 @@ function getCategoryIconComponents(iconColor) {
   };
 }
 
-// Create a Leaflet DivIcon by rendering React icon component to SVG string
 function createCategoryIcon(iconComponent, iconColor) {
   let svgString = ReactDOMServer.renderToStaticMarkup(iconComponent);
-
-  // Inject fill color style or replace fill attributes
-  // For example, wrap SVG content in a <span> with style or replace fill="none" or fill="#000" with your color
-
-  // Simplest approach: add a style tag inside svg for fill
-  // or add fill attribute on <svg> root
-
-  // Add fill color on <svg> root by replacing first <svg ...>
   svgString = svgString.replace(
     /^<svg/,
     `<svg fill="${iconColor}" style="color:${iconColor}"`
@@ -82,6 +91,41 @@ function createCategoryIcon(iconComponent, iconColor) {
   });
 }
 
+function groupPlacesByProximity(places, zoomLevel) {
+  const zoomToRadius = {
+    7: 0.1,
+    8: 0.075,
+    9: 0.05,
+    10: 0.035,
+    11: 0.025,
+    12: 0.015,
+    13: 0.005,
+    14: 0.003,
+    15: 0.0015,
+  };
+
+  const radius = zoomToRadius[zoomLevel] || 0.02;
+  const groups = [];
+
+  places.forEach((place) => {
+    const group = groups.find((g) => {
+      const [lat1, lng1] = g.center;
+      const [lat2, lng2] = place.position;
+      return (
+        Math.abs(lat1 - lat2) < radius && Math.abs(lng1 - lng2) < radius
+      );
+    });
+
+    if (group) {
+      group.places.push(place);
+    } else {
+      groups.push({ center: place.position, places: [place] });
+    }
+  });
+
+  return groups;
+}
+
 export default function MapView({
   location = [41.8781, -87.6298],
   category = '',
@@ -93,32 +137,28 @@ export default function MapView({
   onUseMyLocation,
 }) {
   const { darkMode } = useTheme();
-
-  const headingCategory = category
-    ? category.charAt(0).toUpperCase() + category.slice(1)
-    : 'Places';
+  const [zoomLevel, setZoomLevel] = useState(getZoomLevel(distance));
 
   const tileLayerUrl = darkMode
     ? 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png'
     : 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png';
 
-  // Memoize icons map so it's not recreated unnecessarily
+  const iconColor = darkMode ? 'rgb(81, 162, 255)' : 'rgb(0, 0, 0)';
+  const categoryIcons = useMemo(() => getCategoryIconComponents(iconColor), [iconColor]);
+
   const iconsMap = useMemo(() => {
-    const iconColor = darkMode ? 'rgb(81, 162, 255)' : 'rgb(0, 0, 0)';
-    const categoryIconComponents = getCategoryIconComponents(iconColor);
     const map = {};
-
     places.forEach((place) => {
-      const iconComponent = categoryIconComponents[place.category] || categoryIconComponents.default;
-      map[place.category] = createCategoryIcon(iconComponent, iconColor);
+      const icon = categoryIcons[place.category] || categoryIcons.default;
+      map[place.category] = createCategoryIcon(icon, iconColor);
     });
-
-    if (!map['default']) {
-      map['default'] = createCategoryIcon(categoryIconComponents.default, iconColor);
-    }
-
+    map['default'] = createCategoryIcon(categoryIcons.default, iconColor);
     return map;
-  }, [places, darkMode]);
+  }, [places, categoryIcons, iconColor]);
+
+  const groupedPlaces = useMemo(() => {
+    return groupPlacesByProximity(places, zoomLevel);
+  }, [places, zoomLevel]);
 
   return (
     <div>
@@ -130,7 +170,7 @@ export default function MapView({
           lineHeight: 1.1,
         }}
       >
-        Nearby {headingCategory}
+        Nearby {category ? category.charAt(0).toUpperCase() + category.slice(1) : 'Places'}
       </h2>
 
       {loading && (
@@ -157,6 +197,7 @@ export default function MapView({
           scrollWheelZoom={true}
           style={{ height: '100%', width: '100%' }}
         >
+          <ZoomTracker onZoomChange={setZoomLevel} />
           <ChangeMapView center={location} places={places} distance={distance} />
 
           <TileLayer
@@ -165,15 +206,39 @@ export default function MapView({
             url={tileLayerUrl}
           />
 
-          {places.map((place) => (
-            <Marker
-              key={place.id}
-              position={place.position}
-              icon={iconsMap[place.category] || iconsMap['default']}
-            >
-              <Popup>{place.label}</Popup>
-            </Marker>
-          ))}
+          {zoomLevel >= 13
+            ? places.map((place) => (
+                <Marker
+                  key={place.id}
+                  position={place.position}
+                  icon={iconsMap[place.category] || iconsMap['default']}
+                >
+                  <Popup>{place.label}</Popup>
+                </Marker>
+              ))
+            : groupedPlaces.map((group, index) => (
+                <Marker
+                  key={index}
+                  position={group.center}
+                  icon={iconsMap[category] || iconsMap['default']}
+                  eventHandlers={{
+                    click: (e) => {
+                      const map = e.target._map;
+                      const bounds = latLngBounds(group.places.map((p) => p.position));
+                      map.fitBounds(bounds, { padding: [50, 50] });
+                    },
+                  }}
+                >
+                  <Popup>
+                    {group.places.length === 1
+                      ? group.places[0].label
+                      : `${group.places.length} ${category}s in this area — click to view`}
+                  </Popup>
+                  <Tooltip direction="top" offset={[0, -20]} opacity={1}>
+                    {group.places.length} nearby
+                  </Tooltip>
+                </Marker>
+              ))}
         </MapContainer>
 
         <div className="absolute top-4 right-4 z-20 flex flex-col space-y-2">
