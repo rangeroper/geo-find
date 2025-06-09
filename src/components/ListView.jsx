@@ -9,6 +9,8 @@ import {
   Utensils,
 } from "lucide-react";
 
+import { useTheme } from "../context/ThemeContext";
+
 const categoryIcons = {
   park: Tree,
   hospital: Hospital,
@@ -21,6 +23,8 @@ const categoryIcons = {
 };
 
 export default function ListView({ places = [] }) {
+  const { darkMode } = useTheme();
+
   if (!places.length) {
     return (
       <p className="text-center text-gray-500 dark:text-gray-400 py-6">
@@ -34,6 +38,10 @@ export default function ListView({ places = [] }) {
       {places.map((place) => {
         const Icon = categoryIcons[place.category?.toLowerCase()] || Tree;
 
+        // Dynamic classes based on theme
+        const h3Class = darkMode ? "text-gray-100" : "text-gray-800";
+        const addressClass = darkMode ? "text-gray-400" : "text-gray-600";
+
         return (
           <li key={place.id} className="flex items-start gap-4 py-4">
             {/* Icon */}
@@ -43,16 +51,19 @@ export default function ListView({ places = [] }) {
 
             {/* Content */}
             <div className="flex-1">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100">
+              <h3 className={`text-lg font-semibold ${h3Class}`}>
                 {place.label}
               </h3>
-              <p className="text-sm text-gray-500 dark:text-gray-400">
+              <p className={`text-sm ${addressClass}`}>
                 {place.address || "No address provided"}
               </p>
             </div>
 
             {/* Optional Metadata */}
-            <div className="hidden sm:block text-sm text-gray-400 dark:text-gray-500">
+            <div
+              className={`hidden sm:block text-sm ${darkMode ? "" : "text-gray-400"}`}
+              style={darkMode ? { color: "rgb(81, 161, 254)" } : {}}
+            >
               {place.distance ? `${place.distance.toFixed(1)} mi` : ""}
             </div>
           </li>

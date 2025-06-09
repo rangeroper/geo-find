@@ -13,19 +13,24 @@ A React-based web app to find nearby places with an interactive map and light/da
 - **React Leaflet** — Interactive maps with Leaflet.js in React  
 - **Leaflet** — Open-source JavaScript library for mobile-friendly maps  
 - **Tailwind CSS** — Utility-first CSS framework for styling  
-- **Lucide-react** — Icon components for React  
+- **Material UI Icons** — Icon components for categories  
 - **Custom Theme Context** — React Context API for light/dark theme toggle  
 - **OpenStreetMap** — Open map tiles used for light mode  
-- **Carto Maps** — Dark-themed map tiles for dark mode  
+- **Carto Maps** — Dark-themed map tiles for dark mode   
 
 ## Features
 
 - 🔍 **Autocomplete search** – Smart location input with live suggestions  
 - 📍 **User location** – Automatically centers map to user’s position  
-- 📦 **Category filters** – Easily switch between types like gas, food, etc.  
-- 🗺️ **Interactive map** – Clickable markers with tooltips and smooth zooming  
-- 🌙 **Dark/light mode** – Toggle with persistent preference using localStorage  
+- 📦 **Category filters** – Easily switch between types like parks, restaurants, hospitals, and more  
+- 🗺️ **Interactive map** – Clickable markers with tooltips and popups  
+- 🧩 **Marker grouping by proximity** – Places clustered in congested areas to reduce clutter, expanding on zoom or click  
+- 🔄 **Zoom-aware updates** – Map dynamically updates markers and groups when zoom level changes  
+- 🌙 **Dark/light mode** – Toggle with persistent preference saved in localStorage  
 - 🧭 **Responsive UI** – Clean, mobile-friendly layout using Tailwind CSS  
+- 🎨 **Custom icons** – Category-specific icons rendered as SVG markers for better visual distinction  
+- ⚙️ **Smooth map view changes** – Auto-zoom and fit bounds to show all relevant markers
+
 
 ## Setup & Running Locally
 
@@ -44,9 +49,9 @@ A React-based web app to find nearby places with an interactive map and light/da
 
 ## Coming Soon
 
-- 🖼️ Custom marker icons for more distinct categories
 - 🧠 Enhanced map data (e.g., more detailed metadata, named results)
 - 🌄 Advanced visual styling (terrain shading, layers, gradients)
+- 🖼️ Additional custom marker icons for even more distinct categories
 
 ## 🤝 Contributing
 
